@@ -29,7 +29,7 @@ tasks:
 
   build-server:
     desc: Build server
-    deps: [lint, proto]
+    deps: [lint]
     cmds:
       - go mod tidy
       - CGO_ENABLED=0
