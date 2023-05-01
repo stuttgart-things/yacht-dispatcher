@@ -27,8 +27,8 @@ tasks:
       - cmd: golangci-lint run
         ignore_error: true
 
-  build-server:
-    desc: Build server
+  build-dispatcher:
+    desc: Build dispatcher
     deps: [lint]
     cmds:
       - go mod tidy
@@ -38,14 +38,14 @@ tasks:
 
   build-container:
     desc: Build container image
-    deps: [build-server]
+    deps: [build-dispatcher]
     cmds:
       - sudo nerdctl build -t {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .CI_PROJECT_NAME }}:{{ .DATE }} --build-arg VERSION={{ .MAJOR }}.{{ .MINOR }}.{{ .PATCH }} --build-arg BUILD_DATE={{ .DATE }} --build-arg COMMIT={{ .GIT_COMMIT }} --build-arg GIT_PAT=${CODEHUB_PAT} .
       - sudo nerdctl push {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .CI_PROJECT_NAME }}:{{ .DATE }}
 
   run:
     desc: Run dispatcher locally
-    deps: [build-server]
+    deps: [build-dispatcher]
     cmds:
       - "{{ .CI_PROJECT_NAME }}"
     env:
@@ -62,6 +62,7 @@ tasks:
     deps: [lint]
     cmds:
       - go mod tidy
+      - git config advice.addIgnoredFile false
       - git pull
       - git add *
       - git commit -am 'updated {{ .PROJECT_NAME }} {{ .DATE }} for tag version {{ .UPDATED_TAG_VERSION }}'
@@ -76,9 +77,10 @@ tasks:
 
   push:
     desc: Commit & push the app
-    deps: [build-server]
+    deps: [build-dispatcher]
     cmds:
       - git pull
+      - git config advice.addIgnoredFile false
       - git add *
       - |
         echo "Enter COMMIT_MESSAGE:"
