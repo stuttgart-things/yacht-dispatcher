@@ -5,16 +5,18 @@ Copyright © 2023 Patrick Hermann patrick.hermann@sva.de
 package main
 
 import (
+	"fmt"
 	"os"
+	"time"
 
 	// "github.com/go-git/plumbing/color"
 
-	// internal "codehub.sva.de/Lab/stuttgart-things/yacht/yacht-application-dispatcher/internal"
 	"github.com/fatih/color"
 	sthingsBase "github.com/stuttgart-things/sthingsBase"
+	dispatcher "github.com/stuttgart-things/yacht-dispatcher/dispatcher"
 
-	// redis "github.com/go-redis/redis/v7"
-	// redisqueue "github.com/robinjoseph08/redisqueue/v2"
+	redis "github.com/go-redis/redis/v7"
+	redisqueue "github.com/robinjoseph08/redisqueue/v2"
 	goVersion "go.hein.dev/go-version"
 )
 
@@ -29,11 +31,11 @@ var (
 	date            = "unknown"
 	commit          = "unknown"
 	output          = "yaml"
-	// redisClient     = redis.NewClient(&redis.Options{
-	// 	Addr:     redisAddress + ":" + redisPort,
-	// 	Password: redisPassword,
-	// 	DB:       0,
-	// })
+	redisClient     = redis.NewClient(&redis.Options{
+		Addr:     redisAddress + ":" + redisPort,
+		Password: redisPassword,
+		DB:       0,
+	})
 	log         = sthingsBase.StdOutFileLogger(logfilePath, "2006-01-02 15:04:05", 50, 3, 28)
 	logfilePath = "YD.log"
 )
@@ -52,27 +54,27 @@ __/  / /      \ \_______\
 
 func main() {
 
-	// c, err := redisqueue.NewConsumerWithOptions(&redisqueue.ConsumerOptions{
-	// 	VisibilityTimeout: 60 * time.Second,
-	// 	BlockingTimeout:   15 * time.Second,
-	// 	ReclaimInterval:   1 * time.Second,
-	// 	BufferSize:        100,
-	// 	Concurrency:       1,
-	// 	RedisClient:       redisClient,
-	// })
+	c, err := redisqueue.NewConsumerWithOptions(&redisqueue.ConsumerOptions{
+		VisibilityTimeout: 60 * time.Second,
+		BlockingTimeout:   15 * time.Second,
+		ReclaimInterval:   1 * time.Second,
+		BufferSize:        100,
+		Concurrency:       1,
+		RedisClient:       redisClient,
+	})
 
-	// if err != nil {
-	// 	panic(err)
-	// }
+	if err != nil {
+		panic(err)
+	}
 
-	// c.Register(redisQueue, internal.CreateApplicationWorkerJobs)
+	c.Register(redisQueue, dispatcher.CreateApplicationWorkerJobs)
 
 	// handle errors accordingly
-	// go func() {
-	// 	for err := range c.Errors {
-	// 		fmt.Printf("err: %+v\n", err)
-	// 	}
-	// }()
+	go func() {
+		for err := range c.Errors {
+			fmt.Printf("err: %+v\n", err)
+		}
+	}()
 
 	// Output banner + version output
 	color.Cyan(banner)
@@ -82,7 +84,7 @@ func main() {
 
 	log.Info("YD server started - waiting for messages in ", redisQueue)
 
-	// c.Run()
+	c.Run()
 
 	log.Warn("YD server stopped")
 }
