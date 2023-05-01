@@ -64,6 +64,7 @@ tasks:
       - go mod tidy
       - git config advice.addIgnoredFile false
       - git pull
+      - rm -rf *.log
       - git add *
       - git commit -am 'updated {{ .PROJECT_NAME }} {{ .DATE }} for tag version {{ .UPDATED_TAG_VERSION }}'
       - git push
@@ -81,6 +82,7 @@ tasks:
     cmds:
       - git pull
       - git config advice.addIgnoredFile false
+      - rm -rf *.log
       - git add *
       - |
         echo "Enter COMMIT_MESSAGE:"
