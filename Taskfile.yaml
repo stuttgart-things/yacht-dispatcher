@@ -4,7 +4,7 @@ vars:
   MODULE: github.com/stuttgart-things/yacht-dispatcher
   REGISTRY: eu.gcr.io
   REPOSITORY_NAME: stuttgart-things
-  CI_PROJECT_NAME:
+  PROJECT_NAME:
     sh: echo ${PWD##*/}
   DATE:
     sh: date +"%y.%m%d.%H%M"
@@ -44,14 +44,14 @@ tasks:
     desc: Build container image
     deps: [build-dispatcher]
     cmds:
-      - sudo nerdctl build -t {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .CI_PROJECT_NAME }}:{{ .DATE }} --build-arg VERSION={{ .MAJOR }}.{{ .MINOR }}.{{ .PATCH }} --build-arg BUILD_DATE={{ .DATE }} --build-arg COMMIT={{ .GIT_COMMIT }} --build-arg GIT_PAT=${CODEHUB_PAT} .
-      - sudo nerdctl push {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .CI_PROJECT_NAME }}:{{ .DATE }}
+      - sudo nerdctl build -t {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }} --build-arg VERSION={{ .MAJOR }}.{{ .MINOR }}.{{ .PATCH }} --build-arg BUILD_DATE={{ .DATE }} --build-arg COMMIT={{ .GIT_COMMIT }} --build-arg GIT_PAT=${CODEHUB_PAT} .
+      - sudo nerdctl push {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}
 
   run:
     desc: Run dispatcher locally
     deps: [build-dispatcher]
     cmds:
-      - "{{ .CI_PROJECT_NAME }}"
+      - "{{ .PROJECT_NAME }}"
     env:
       SERVER_PORT: "{{ .LOCAL_SERVER_PORT }}"
 
@@ -59,7 +59,7 @@ tasks:
     desc: Run container image
     deps: [build-image]
     cmds:
-      - sudo nerdctl run -e SERVER_PORT={{ .LOCAL_CONTAINER_SERVER_PORT }} -p {{ .LOCAL_CONTAINER_SERVER_PORT }}:{{ .LOCAL_CONTAINER_SERVER_PORT }}  {{ .REGISTRY }}/{{ .CI_PROJECT_NAME }}/{{ .CI_PROJECT_NAME }}:{{ .DATE }}
+      - sudo nerdctl run -e SERVER_PORT={{ .LOCAL_CONTAINER_SERVER_PORT }} -p {{ .LOCAL_CONTAINER_SERVER_PORT }}:{{ .LOCAL_CONTAINER_SERVER_PORT }}  {{ .REGISTRY }}/{{ .PROJECT_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}
 
   tag:
     desc: commit, push & tag the module
