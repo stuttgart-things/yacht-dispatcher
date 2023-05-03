@@ -1,0 +1,86 @@
+namespace: yacht
+# RBAC
+serviceAccounts:
+  yacht-dispatcher:
+    labels:
+      app: yacht-dispatcher
+roles:
+  yacht-dispatcher:
+    labels:
+      app: yacht-dispatcher
+    rules:
+      - apiGroups:
+          - ""
+        resources:
+          - pods
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+      - apiGroups:
+          - "batch"
+        resources:
+          - jobs
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+roleBindings:
+  yacht-dispatcher:
+    labels:
+      app: yacht-dispatcher
+    roleRef:
+      kind: Role
+      name: yacht-dispatcher
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: yacht-dispatcher
+        namespace: yacht
+clusterRoles:
+  list-all-namespaces:
+    labels:
+      app: yacht-dispatcher
+    rules:
+      - apiGroups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - get
+          - list
+      - apiGroups:
+          - "batch"
+        resources:
+          - jobs
+        verbs:
+          - get
+          - list
+          - patch
+          - watch
+          - create
+clusterRoleBindings:
+  list-all-namespaces-and-jobs-yd:
+    roleRef:
+      kind: ClusterRole
+      name: list-all-namespaces-and-jobs
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: yacht-dispatcher
+        namespace: yacht
+  tekton-pipelines-controller-cluster-access-yd:
+    roleRef:
+      kind: ClusterRole
+      name: tekton-pipelines-controller-cluster-access
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: yacht-dispatcher
+        namespace: yacht
+deployment:
+  containers:
+    manager:
+      tag: 23.0503.0645-
