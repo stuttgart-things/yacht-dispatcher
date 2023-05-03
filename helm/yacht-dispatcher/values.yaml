@@ -83,4 +83,4 @@ clusterRoleBindings:
 deployment:
   containers:
     manager:
-      tag: 23.0503.0645-
+      tag: 23.0503.0649-0.1.3
