@@ -1,4 +1,55 @@
 namespace: yacht
+
+configmaps:
+  yad-configuration:
+    YAW_IMAGE: scr.app.sthings.tiab.ssc.sva.de/yacht-application-worker/yacht-application-worker:23.0307.0908
+    TEKTON_NAMESPACE: yacht-tekton
+    STATUS_TO_ELASTICSEARCH: "TRUE"
+    ELASTICSEARCH_URL: http://10.100.136.150:9200
+    ELASTICSEARCH_STATUS_INDEX: yacht-worker-status
+
+secrets:
+  redis-connection-yd:
+    name: redis-connection-yd
+    labels:
+      app: yacht-dispatcher
+    dataType: data
+    secretKVs:
+      REDIS_SERVER: MTAuMzEuMTAxLjEzOA==
+      REDIS_PORT: NjM3OQ==
+      REDIS_PASSWORD: QXRsYW43aXM=
+      REDIS_QUEUE: cmVkaXNxdWV1ZTp5YWNodC1yZXZpc2lvbnJ1bnM=
+
+deployment:
+  name: yacht-dispatcher
+  labels:
+    app: yacht-dispatcher
+  selectorLabels:
+    app: yacht-dispatcher
+  ports:
+    app-port:
+      containerPort: 50051
+      protocol: TCP
+  allowPrivilegeEscalation: "false"
+  privileged: "false"
+  runAsNonRoot: "false"
+  readOnlyRootFilesystem: "true"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  containers:
+    yacht-dispatcher:
+      image: eu.gcr.io/stuttgart-things/yacht-dispatcher
+      replicaCount: 1
+      imagePullPolicy: Always
+      tag: 23.0522.0850-0.3.8
+      securityContext:
+        capabilities: {}
+
 # RBAC
 serviceAccounts:
   yacht-dispatcher:
@@ -80,7 +131,3 @@ clusterRoleBindings:
       - kind: ServiceAccount
         name: yacht-dispatcher
         namespace: yacht
-deployment:
-  containers:
-    manager:
-      tag: 23.0503.0652-0.1.3
