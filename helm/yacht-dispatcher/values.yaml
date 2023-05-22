@@ -26,10 +26,6 @@ deployment:
     app: yacht-dispatcher
   selectorLabels:
     app: yacht-dispatcher
-  ports:
-    app-port:
-      containerPort: 50051
-      protocol: TCP
   allowPrivilegeEscalation: "false"
   privileged: "false"
   runAsNonRoot: "false"
@@ -47,9 +43,10 @@ deployment:
       replicaCount: 1
       imagePullPolicy: Always
       tag: 23.0522.0850-0.3.8
+      secretsEnvFrom:
+        - name: hello
       securityContext:
         capabilities: {}
-
 # RBAC
 serviceAccounts:
   yacht-dispatcher:
