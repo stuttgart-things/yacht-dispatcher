@@ -50,6 +50,7 @@ serviceAccounts:
   yacht-dispatcher:
     labels:
       app: yacht-dispatcher
+
 roles:
   yacht-dispatcher:
     labels:
@@ -73,6 +74,7 @@ roles:
           - list
           - watch
           - create
+
 roleBindings:
   yacht-dispatcher:
     labels:
@@ -85,8 +87,9 @@ roleBindings:
       - kind: ServiceAccount
         name: yacht-dispatcher
         namespace: yacht
+
 clusterRoles:
-  list-all-namespaces-jd:
+  list-all-namespaces-and-jobs-jd:
     labels:
       app: yacht-dispatcher
     rules:
@@ -107,6 +110,7 @@ clusterRoles:
           - patch
           - watch
           - create
+
 clusterRoleBindings:
   list-all-namespaces-and-jobs-yd:
     roleRef:
