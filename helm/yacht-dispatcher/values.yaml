@@ -27,6 +27,7 @@ deployment:
   privileged: "false"
   runAsNonRoot: "false"
   readOnlyRootFilesystem: "true"
+  serviceAccount: yacht-dispatcher
   resources:
     requests:
       cpu: 50m
