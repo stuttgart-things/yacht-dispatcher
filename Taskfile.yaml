@@ -82,7 +82,7 @@ tasks:
 
   push:
     desc: Commit & push the app
-    deps: [build-dispatcher, build-image, package]
+    deps: [build-dispatcher, tag, build-image, package]
     cmds:
       - git pull
       - git config advice.addIgnoredFile false

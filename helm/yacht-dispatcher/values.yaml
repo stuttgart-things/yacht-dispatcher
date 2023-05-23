@@ -8,17 +8,17 @@ configmaps:
     ELASTICSEARCH_URL: http://10.100.136.150:9200
     ELASTICSEARCH_STATUS_INDEX: yacht-worker-status
 
-secrets:
-  redis-connection-yd:
-    name: redis-connection-yd
-    labels:
-      app: yacht-dispatcher
-    dataType: data
-    secretKVs:
-      REDIS_SERVER: MTAuMzEuMTAxLjEzOA==
-      REDIS_PORT: NjM3OQ==
-      REDIS_PASSWORD: QXRsYW43aXM=
-      REDIS_QUEUE: cmVkaXNxdWV1ZTp5YWNodC1yZXZpc2lvbnJ1bnM=
+# secrets:
+#   redis-connection:
+#     name: redis-connection
+#     labels:
+#       app: yacht-dispatcher
+#     dataType: data
+#     secretKVs:
+#       REDIS_SERVER: MTAuMzEuMTAxLjEzOA==
+#       REDIS_PORT: NjM3OQ==
+#       REDIS_PASSWORD: QXRsYW43aXM=
+#       REDIS_QUEUE: cmVkaXNxdWV1ZTp5YWNodC1yZXZpc2lvbnJ1bnM=
 
 deployment:
   name: yacht-dispatcher
@@ -44,7 +44,7 @@ deployment:
       imagePullPolicy: Always
       tag: 23.0522.0850-0.3.8
       secretsEnvFrom:
-        - name: hello
+        - name: redis-connection
       securityContext:
         capabilities: {}
 # RBAC
