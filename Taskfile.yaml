@@ -1,5 +1,6 @@
 ---
-version: "3"
+version: 3
+
 vars:
   MODULE: github.com/stuttgart-things/yacht-dispatcher
   REGISTRY: eu.gcr.io
@@ -44,8 +45,8 @@ tasks:
     desc: Build container image
     deps: [build-dispatcher]
     cmds:
-      - sudo nerdctl build -t {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }} --build-arg VERSION={{ .MAJOR }}.{{ .MINOR }}.{{ .PATCH }} --build-arg BUILD_DATE={{ .DATE }} --build-arg COMMIT={{ .GIT_COMMIT }} --build-arg GIT_PAT=${CODEHUB_PAT} .
-      - sudo nerdctl push {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}
+      - sudo nerdctl build -t {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}-{{ .UPDATED_TAG_VERSION }} --build-arg VERSION={{ .MAJOR }}.{{ .MINOR }}.{{ .PATCH }} --build-arg BUILD_DATE={{ .DATE }} --build-arg COMMIT={{ .GIT_COMMIT }} --build-arg GIT_PAT=${CODEHUB_PAT} .
+      - sudo nerdctl push {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}-{{ .UPDATED_TAG_VERSION }}
 
   run:
     desc: Run dispatcher locally
@@ -59,7 +60,7 @@ tasks:
     desc: Run container image
     deps: [build-image]
     cmds:
-      - sudo nerdctl run -e SERVER_PORT={{ .LOCAL_CONTAINER_SERVER_PORT }} -p {{ .LOCAL_CONTAINER_SERVER_PORT }}:{{ .LOCAL_CONTAINER_SERVER_PORT }}  {{ .REGISTRY }}/{{ .PROJECT_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}
+      - sudo nerdctl run -e SERVER_PORT={{ .LOCAL_CONTAINER_SERVER_PORT }} -p {{ .LOCAL_CONTAINER_SERVER_PORT }}:{{ .LOCAL_CONTAINER_SERVER_PORT }} {{ .REGISTRY }}/{{ .PROJECT_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}-{{ .UPDATED_TAG_VERSION }}
 
   tag:
     desc: commit, push & tag the module
@@ -72,7 +73,7 @@ tasks:
       - git add *
       - git commit -am 'updated {{ .PROJECT_NAME }} {{ .DATE }} for tag version {{ .UPDATED_TAG_VERSION }}'
       - git push
-      - git tag -a {{ .UPDATED_TAG_VERSION }} -m 'updated for stuttgart-things {{.DATE}} for tag version {{ .UPDATED_TAG_VERSION }}'
+      - git tag -a {{ .UPDATED_TAG_VERSION }} -m 'updated for stuttgart-things {{ .DATE }} for tag version {{ .UPDATED_TAG_VERSION }}'
       - git push origin --tags
     vars:
       UPDATED_TAG:
