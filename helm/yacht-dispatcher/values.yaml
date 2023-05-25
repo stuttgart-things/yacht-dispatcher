@@ -1,5 +1,4 @@
 namespace: yacht
-
 configmaps:
   yad-configuration:
     YW_IMAGE: eu.gcr.io/stuttgart-things/yacht-worker:23.0524.1959-0.1.6
@@ -7,7 +6,6 @@ configmaps:
     STATUS_TO_ELASTICSEARCH: "TRUE"
     ELASTICSEARCH_URL: http://10.100.136.150:9200
     ELASTICSEARCH_STATUS_INDEX: yacht-worker-status
-
 # secrets:
 #   redis-connection:
 #     name: redis-connection
@@ -19,7 +17,6 @@ configmaps:
 #       REDIS_PORT: NjM3OQ==
 #       REDIS_PASSWORD: QXRsYW43aXM=
 #       REDIS_QUEUE: cmVkaXNxdWV1ZTp5YWNodC1yZXZpc2lvbnJ1bnM=
-
 deployment:
   name: yacht-dispatcher
   labels:
@@ -43,12 +40,11 @@ deployment:
       image: eu.gcr.io/stuttgart-things/yacht-dispatcher
       replicaCount: 1
       imagePullPolicy: Always
-      tag: 23.0523.1400-0.1.8
+      tag: 23.0525.1228-0.1.10
       # secretsEnvFrom:
       #   - name: redis-connection
       securityContext:
         capabilities: {}
-
 # RBAC
 serviceAccounts:
   yacht-dispatcher:
@@ -59,7 +55,6 @@ serviceAccounts:
     labels:
       app: yacht
       module: worker
-
 roles:
   yacht-dispatcher:
     labels:
@@ -96,7 +91,6 @@ roles:
           - list
           - watch
           - create
-
 roleBindings:
   yacht-dispatcher:
     labels:
@@ -120,7 +114,6 @@ roleBindings:
       - kind: ServiceAccount
         name: yacht-worker
         namespace: yacht
-
 clusterRoles:
   list-all-namespaces-and-jobs-jd:
     labels:
@@ -154,7 +147,6 @@ clusterRoles:
         verbs:
           - get
           - list
-
 clusterRoleBindings:
   list-all-namespaces-and-jobs-yd:
     roleRef:
