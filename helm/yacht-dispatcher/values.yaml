@@ -111,7 +111,7 @@ roleBindings:
         namespace: yacht
   yacht-worker:
     labels:
-      app: yacht-worker:
+      app: yacht-worker
     roleRef:
       kind: Role
       name: yacht-worker
