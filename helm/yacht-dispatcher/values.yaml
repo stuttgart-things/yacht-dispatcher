@@ -1,11 +1,13 @@
 namespace: yacht
+
 configmaps:
   yad-configuration:
-    YAW_IMAGE: scr.app.sthings.tiab.ssc.sva.de/yacht-application-worker/yacht-application-worker:23.0307.0908
+    YW_IMAGE: eu.gcr.io/stuttgart-things/yacht-worker:23.0524.1959-0.1.6
     TEKTON_NAMESPACE: yacht-tekton
     STATUS_TO_ELASTICSEARCH: "TRUE"
     ELASTICSEARCH_URL: http://10.100.136.150:9200
     ELASTICSEARCH_STATUS_INDEX: yacht-worker-status
+
 # secrets:
 #   redis-connection:
 #     name: redis-connection
@@ -17,6 +19,7 @@ configmaps:
 #       REDIS_PORT: NjM3OQ==
 #       REDIS_PASSWORD: QXRsYW43aXM=
 #       REDIS_QUEUE: cmVkaXNxdWV1ZTp5YWNodC1yZXZpc2lvbnJ1bnM=
+
 deployment:
   name: yacht-dispatcher
   labels:
@@ -45,11 +48,18 @@ deployment:
       #   - name: redis-connection
       securityContext:
         capabilities: {}
+
 # RBAC
 serviceAccounts:
   yacht-dispatcher:
     labels:
-      app: yacht-dispatcher
+      app: yacht
+      module: dispatcher
+  yacht-worker:
+    labels:
+      app: yacht
+      module: worker
+
 roles:
   yacht-dispatcher:
     labels:
@@ -73,6 +83,20 @@ roles:
           - list
           - watch
           - create
+  yacht-worker:
+    labels:
+      app: yacht-worker
+    rules:
+      - apiGroups:
+          - ""
+        resources:
+          - pods
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+
 roleBindings:
   yacht-dispatcher:
     labels:
@@ -85,6 +109,18 @@ roleBindings:
       - kind: ServiceAccount
         name: yacht-dispatcher
         namespace: yacht
+  yacht-worker:
+    labels:
+      app: yacht-worker:
+    roleRef:
+      kind: Role
+      name: yacht-worker
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: yacht-worker
+        namespace: yacht
+
 clusterRoles:
   list-all-namespaces-and-jobs-jd:
     labels:
@@ -107,6 +143,18 @@ clusterRoles:
           - patch
           - watch
           - create
+  list-all-namespaces-and-jobs-jw:
+    labels:
+      app: yacht-worker
+    rules:
+      - apiGroups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - get
+          - list
+
 clusterRoleBindings:
   list-all-namespaces-and-jobs-yd:
     roleRef:
@@ -125,4 +173,13 @@ clusterRoleBindings:
     subjects:
       - kind: ServiceAccount
         name: yacht-dispatcher
+        namespace: yacht
+  list-all-namespaces-yw:
+    roleRef:
+      kind: ClusterRole
+      name: list-all-namespaces-jw
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: yacht-worker
         namespace: yacht
