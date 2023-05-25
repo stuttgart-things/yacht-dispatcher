@@ -39,13 +39,13 @@ tasks:
       - go mod tidy
       - CGO_ENABLED=0
       - GOOS=linux
-      - go install -ldflags="-X main.version=v{{ .MAJOR }}.{{ .MINOR }}.{{ .PATCH }} -X main.date={{ .DATE }} -X main.commit={{ .GIT_COMMIT }}"
+      - go install -ldflags="-X main.version=v{{ .UPDATED_TAG_VERSION }} -X main.date={{ .DATE }} -X main.commit={{ .GIT_COMMIT }}"
 
   build-image:
     desc: Build container image
     deps: [build-dispatcher]
     cmds:
-      - sudo nerdctl build -t {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}-{{ .UPDATED_TAG_VERSION }} --build-arg VERSION={{ .MAJOR }}.{{ .MINOR }}.{{ .PATCH }} --build-arg BUILD_DATE={{ .DATE }} --build-arg COMMIT={{ .GIT_COMMIT }} --build-arg GIT_PAT=${CODEHUB_PAT} .
+      - sudo nerdctl build -t {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}-{{ .UPDATED_TAG_VERSION }} --build-arg VERSION={{ .UPDATED_TAG_VERSION }} --build-arg BUILD_DATE={{ .DATE }} --build-arg COMMIT={{ .GIT_COMMIT }} --build-arg GIT_PAT=${CODEHUB_PAT} .
       - sudo nerdctl push {{ .REGISTRY }}/{{ .REPOSITORY_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}-{{ .UPDATED_TAG_VERSION }}
 
   run:
@@ -87,7 +87,7 @@ tasks:
       - |
         echo "Enter COMMIT_MESSAGE:"
         read COMMIT_MESSAGE;
-        git commit -am "${COMMIT_MESSAGE} for {{ .MAJOR }}.{{ .MINOR }}.{{ .PATCH }}"
+        git commit -am "${COMMIT_MESSAGE} for {{ .UPDATED_TAG_VERSION }}"
       - git push
       - helm push {{ .PROJECT_NAME }}-{{ .UPDATED_TAG_VERSION }}.tgz oci://{{ .REGISTRY }}/{{ .REPOSITORY_NAME }}
       - rm -rf {{ .PROJECT_NAME }}-{{ .UPDATED_TAG_VERSION }}.tgz
