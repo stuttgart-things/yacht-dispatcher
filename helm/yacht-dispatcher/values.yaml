@@ -41,7 +41,7 @@ deployment:
       image: eu.gcr.io/stuttgart-things/yacht-dispatcher
       replicaCount: 1
       imagePullPolicy: Always
-      tag: 23.0621.1647-0.1.18
+      tag: 23.0621.1725-0.1.19
       # secretsEnvFrom:
       #   - name: redis-connection
       securityContext:
@@ -158,14 +158,20 @@ clusterRoleBindings:
       - kind: ServiceAccount
         name: yacht-dispatcher
         namespace: yacht
+      - kind: ServiceAccount
+        name: yacht-worker
+        namespace: yacht
   tekton-pipelines-controller-cluster-access-yd:
     roleRef:
       kind: ClusterRole
-      name: tekton-pipelines-controller-cluster-access-jd
+      name: tekton-pipelines-controller-cluster-access
       apiGroup: rbac.authorization.k8s.io
     subjects:
       - kind: ServiceAccount
         name: yacht-dispatcher
+        namespace: yacht
+      - kind: ServiceAccount
+        name: yacht-worker
         namespace: yacht
   list-all-namespaces-yw:
     roleRef:
