@@ -61,9 +61,9 @@ spec:
       name: yaw-3c5ac44c6fec00989c7e27b36630a82cdfd26e3b
       namespace: yacht-tekton
       labels:
-        jobgroup: yacht-application-worker
+        jobgroup: yacht-worker
     spec:
-      serviceAccountName: yacht-application-worker
+      serviceAccountName: yacht-worker
       containers:
       - image: {{ .Image }}
         envFrom:
@@ -91,7 +91,7 @@ spec:
           requests:
             cpu: 500m
             memory: 500Mi
-        name: yacht-application-worker
+        name: yacht-worker
       restartPolicy: Never
 `
 

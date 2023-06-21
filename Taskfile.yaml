@@ -62,6 +62,11 @@ tasks:
     cmds:
       - sudo nerdctl run -e SERVER_PORT={{ .LOCAL_CONTAINER_SERVER_PORT }} -p {{ .LOCAL_CONTAINER_SERVER_PORT }}:{{ .LOCAL_CONTAINER_SERVER_PORT }} {{ .REGISTRY }}/{{ .PROJECT_NAME }}/{{ .PROJECT_NAME }}:{{ .DATE }}-{{ .UPDATED_TAG_VERSION }}
 
+  update-deployment:
+    desc: Update deployment application
+    cmds:
+      - yq e -i '.spec.source.targetRevision = "{{ .UPDATED_TAG_VERSION }}"' argocd/deployment.yaml
+
   tag:
     desc: commit, push & tag the module
     deps: [lint]
@@ -95,7 +100,7 @@ tasks:
 
   push:
     desc: Commit & push the app
-    deps: [build-dispatcher, tag, build-image, package]
+    deps: [build-dispatcher, tag, build-image, package, update-deployment]
     cmds:
       - git pull
       - git config advice.addIgnoredFile false
