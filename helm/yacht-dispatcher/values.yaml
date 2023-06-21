@@ -1,6 +1,4 @@
----
 namespace: yacht
-
 # configmaps:
 #   yad-configuration:
 #     YW_IMAGE: eu.gcr.io/stuttgart-things/yacht-worker:23.0524.1959-0.1.6
@@ -20,7 +18,6 @@ namespace: yacht
 #       REDIS_PORT: ""
 #       REDIS_PASSWORD: ""
 #       REDIS_QUEUE: ""
-
 deployment:
   name: yacht-dispatcher
   labels:
@@ -44,12 +41,11 @@ deployment:
       image: eu.gcr.io/stuttgart-things/yacht-dispatcher
       replicaCount: 1
       imagePullPolicy: Always
-      tag: 23.0621.1536-0.1.14
+      tag: 23.0621.1550-0.1.15
       # secretsEnvFrom:
       #   - name: redis-connection
       securityContext:
         capabilities: {}
-
 # RBAC
 serviceAccounts:
   yacht-dispatcher:
