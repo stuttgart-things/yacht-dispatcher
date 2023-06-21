@@ -34,7 +34,7 @@ var (
 	})
 )
 
-type YawRevisionRunJob struct {
+type ywRevisionRunJob struct {
 	Name                     string
 	NamePrefix               string
 	NameSuffix               string
@@ -52,14 +52,12 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .NamePrefix }}-{{ .Name }}-{{ .NameSuffix }}
-  namespace: yacht-tekton
   labels:
     jobgroup: yacht-application-worker
 spec:
   template:
     metadata:
       name: yaw-3c5ac44c6fec00989c7e27b36630a82cdfd26e3b
-      namespace: yacht-tekton
       labels:
         jobgroup: yacht-worker
     spec:
@@ -69,8 +67,6 @@ spec:
         envFrom:
         - secretRef:
             name: redis-connection
-        - configMapRef:
-            name: yaw-configuration
         env:
         - name: PR_RANGES
           value: "{{ .PrRanges }}"
@@ -140,7 +136,7 @@ func CreateApplicationWorkerJobs(msg *redisqueue.Message) error {
 
 		dt := time.Now()
 
-		job := YawRevisionRunJob{
+		job := ywRevisionRunJob{
 			Name:                     yachtCommitID,
 			PrRanges:                 strings.Join(prRanges, ";"),
 			NamePrefix:               "yaw",
