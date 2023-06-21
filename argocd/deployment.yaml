@@ -1,0 +1,31 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: yacht-dispatcher-deployment
+  namespace: argocd
+spec:
+  project: app
+  destination:
+    name: dev11
+    namespace: yacht
+  source:
+    repoURL: eu.gcr.io/stuttgart-things
+    chart: yacht-dispatcher
+    targetRevision: 0.1.14
+    plugin:
+      name: argocd-vault-plugin-helm
+      env:
+        - name: HELM_VALUES
+          value: |
+            configmaps:
+              yas-configuration:
+                PIPELINE_WORKSPACE: yacht-tekton
+
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
