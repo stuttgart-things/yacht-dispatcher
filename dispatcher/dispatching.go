@@ -145,7 +145,7 @@ func CreateApplicationWorkerJobs(msg *redisqueue.Message) error {
 			PrRanges:                 strings.Join(prRanges, ";"),
 			NamePrefix:               "yaw",
 			NameSuffix:               dt.Format("020405"),
-			Image:                    os.Getenv("YAW_IMAGE"),
+			Image:                    os.Getenv("YW_IMAGE"),
 			TektonNamespace:          os.Getenv("TEKTON_NAMESPACE"),
 			StatusToElasticsearch:    os.Getenv("STATUS_TO_ELASTICSEARCH"),
 			ElasticsearchUrl:         os.Getenv("ELASTICSEARCH_URL"),
@@ -166,7 +166,7 @@ func CreateApplicationWorkerJobs(msg *redisqueue.Message) error {
 			log.Fatalf("execution: %s", err)
 		}
 
-		sthingsK8s.CreateDynamicResourcesFromTemplate(clusterConfig, []byte(buf.String()), yachtNamespace)
+		sthingsK8s.CreateDynamicResourcesFromTemplate(clusterConfig, buf.Bytes(), yachtNamespace)
 
 	}
 

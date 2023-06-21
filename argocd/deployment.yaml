@@ -12,14 +12,14 @@ spec:
   source:
     repoURL: eu.gcr.io/stuttgart-things
     chart: yacht-dispatcher
-    targetRevision: 0.1.15
+    targetRevision: 0.1.16
     plugin:
       name: argocd-vault-plugin-helm
       env:
         - name: HELM_VALUES
           value: |
             configmaps:
-              yad-configuration:
+              yd-configuration:
                 YW_IMAGE: eu.gcr.io/stuttgart-things/yacht-worker:23.0524.1959-0.1.6
                 TEKTON_NAMESPACE: tekton-cd
                 STATUS_TO_ELASTICSEARCH: "TRUE"

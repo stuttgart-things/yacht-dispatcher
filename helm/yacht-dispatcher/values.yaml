@@ -1,6 +1,6 @@
 namespace: yacht
 # configmaps:
-#   yad-configuration:
+#   yd-configuration:
 #     YW_IMAGE: eu.gcr.io/stuttgart-things/yacht-worker:23.0524.1959-0.1.6
 #     TEKTON_NAMESPACE: yacht-tekton
 #     STATUS_TO_ELASTICSEARCH: "TRUE"
