@@ -1,11 +1,14 @@
+---
 namespace: yacht
-configmaps:
-  yad-configuration:
-    YW_IMAGE: eu.gcr.io/stuttgart-things/yacht-worker:23.0524.1959-0.1.6
-    TEKTON_NAMESPACE: yacht-tekton
-    STATUS_TO_ELASTICSEARCH: "TRUE"
-    ELASTICSEARCH_URL: http://10.100.136.150:9200
-    ELASTICSEARCH_STATUS_INDEX: yacht-worker-status
+
+# configmaps:
+#   yad-configuration:
+#     YW_IMAGE: eu.gcr.io/stuttgart-things/yacht-worker:23.0524.1959-0.1.6
+#     TEKTON_NAMESPACE: yacht-tekton
+#     STATUS_TO_ELASTICSEARCH: "TRUE"
+#     ELASTICSEARCH_URL: http://10.100.136.150:9200
+#     ELASTICSEARCH_STATUS_INDEX: yacht-worker-status
+
 # secrets:
 #   redis-connection:
 #     name: redis-connection
@@ -13,10 +16,11 @@ configmaps:
 #       app: yacht-dispatcher
 #     dataType: data
 #     secretKVs:
-#       REDIS_SERVER: MTAuMzEuMTAxLjEzOA==
-#       REDIS_PORT: NjM3OQ==
-#       REDIS_PASSWORD: QXRsYW43aXM=
-#       REDIS_QUEUE: cmVkaXNxdWV1ZTp5YWNodC1yZXZpc2lvbnJ1bnM=
+#       REDIS_SERVER: ""
+#       REDIS_PORT: ""
+#       REDIS_PASSWORD: ""
+#       REDIS_QUEUE: ""
+
 deployment:
   name: yacht-dispatcher
   labels:
@@ -45,6 +49,7 @@ deployment:
       #   - name: redis-connection
       securityContext:
         capabilities: {}
+
 # RBAC
 serviceAccounts:
   yacht-dispatcher:
