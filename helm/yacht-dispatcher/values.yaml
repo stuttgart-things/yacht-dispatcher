@@ -41,7 +41,7 @@ deployment:
       image: eu.gcr.io/stuttgart-things/yacht-dispatcher
       replicaCount: 1
       imagePullPolicy: Always
-      tag: 23.0621.1725-0.1.19
+      tag: 23.0621.1731-0.1.19
       # secretsEnvFrom:
       #   - name: redis-connection
       securityContext:
