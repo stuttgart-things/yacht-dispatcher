@@ -176,7 +176,7 @@ clusterRoleBindings:
   list-all-namespaces-yw:
     roleRef:
       kind: ClusterRole
-      name: list-all-namespaces-jw
+      name: list-all-namespaces-and-jobs-jw
       apiGroup: rbac.authorization.k8s.io
     subjects:
       - kind: ServiceAccount
